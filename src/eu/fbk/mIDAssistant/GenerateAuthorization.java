@@ -603,12 +603,23 @@ public class GenerateAuthorization extends AnAction {
      * @param psiClass
      */
     private void generateCompareTo(PsiClass psiClass) {
+
         StringBuilder createAuthRequestBuilder = new StringBuilder("private void createAuthRequest() {\n" +
                 "        AuthorizationRequest.Builder authRequestBuilder = new AuthorizationRequest.Builder(\n" +
                 "                mAuthStateManager.getCurrent().getAuthorizationServiceConfiguration(),\n" +
                 "                mClientId.get(),\n" +
                 "                ResponseTypeValues.CODE,\n" +
                 "                mConfiguration.getRedirectUri())\n" +
+                "                .setScope(mConfiguration.getScope());\n" +
+                "        mAuthRequest.set(authRequestBuilder.build());\n" +
+                "    }");
+        StringBuilder createAuthRequestBuilderSec = new StringBuilder("private void createAuthRequest() {\n" +
+                "        AuthorizationRequest.Builder authRequestBuilder = new AuthorizationRequest.Builder(\n" +
+                "                mAuthStateManager.getCurrent().getAuthorizationServiceConfiguration(),\n" +
+                "                mClientId.get(),\n" +
+                "                ResponseTypeValues.CODE,\n" +
+                "                mConfiguration.getRedirectUri())\n" +
+                "                .setCodeVerifier(null)\n" +
                 "                .setScope(mConfiguration.getScope());\n" +
                 "        mAuthRequest.set(authRequestBuilder.build());\n" +
                 "    }");
@@ -728,7 +739,13 @@ public class GenerateAuthorization extends AnAction {
                 "    private BrowserMatcher mBrowserMatcher = AnyBrowserMatcher.INSTANCE;\n");
         StringBuilder Var8 = new StringBuilder("Button " + GenerateClassAuthorization.getInstance().getBtnName() + ";");
         PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(psiClass.getProject());
-        PsiMethod createAuthRequest= elementFactory.createMethodFromText(createAuthRequestBuilder.toString(),psiClass);
+        String idpName = GenerateClassAuthorization.getInstance().getIdmName();
+        PsiMethod createAuthRequest;
+        if ( idpName.equals("Box")  || idpName.equals("DropBox") || idpName.equals("Yahoo") ) {
+            createAuthRequest= elementFactory.createMethodFromText(createAuthRequestBuilderSec.toString(),psiClass);
+        } else {
+            createAuthRequest= elementFactory.createMethodFromText(createAuthRequestBuilder.toString(),psiClass);
+        }
         PsiMethod AuthorizationService= elementFactory.createMethodFromText(AuthorizationServiceBuilder.toString(),psiClass);
         PsiMethod recreateAuthorizationService= elementFactory.createMethodFromText(recreateAuthorizationServiceBuilder.toString(),psiClass);
         PsiMethod warmUpBrowser= elementFactory.createMethodFromText(warmUpBrowserBuilder.toString(),psiClass);
@@ -829,6 +846,17 @@ public class GenerateAuthorization extends AnAction {
                 "                .setScope(mConfigurationAuthorization.getScope());\n" +
                 "        mAuthRequestAuthorization.set(authRequestBuilder.build());\n" +
                 "    }");
+        StringBuilder createAuthRequestBuilderSec = new StringBuilder("private void createAuthRequestAuthorization() {\n" +
+                "        AuthorizationRequest.Builder authRequestBuilder = new AuthorizationRequest.Builder(\n" +
+                "                mAuthStateManagerAuthorization.getCurrent().getAuthorizationServiceConfiguration(),\n" +
+                "                mClientId.get(),\n" +
+                "                ResponseTypeValues.CODE,\n" +
+                "                mConfigurationAuthorization.getRedirectUri())\n" +
+                "                .setCodeVerifier(null)\n" +
+                "                .setScope(mConfigurationAuthorization.getScope());\n" +
+                "        mAuthRequestAuthorization.set(authRequestBuilder.build());\n" +
+                "    }");
+
         StringBuilder AuthorizationServiceBuilder = new StringBuilder("private AuthorizationService createAuthorizationServiceAuthorization() {\n" +
                 "        Log.i(TAG, \"Creating authorization service\");\n" +
                 "        AppAuthConfiguration.Builder builder = new AppAuthConfiguration.Builder();\n" +
@@ -1118,7 +1146,12 @@ public class GenerateAuthorization extends AnAction {
 
         String idpName = GenerateClassAuthorization.getInstance().getIdmName();
         PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(psiClass.getProject());
-        PsiMethod createAuthRequest= elementFactory.createMethodFromText(createAuthRequestBuilder.toString(),psiClass);
+        PsiMethod createAuthRequest;
+        if ( idpName.equals("Box")  || idpName.equals("DropBox") || idpName.equals("Yahoo") ) {
+            createAuthRequest= elementFactory.createMethodFromText(createAuthRequestBuilderSec.toString(),psiClass);
+        } else {
+            createAuthRequest= elementFactory.createMethodFromText(createAuthRequestBuilder.toString(),psiClass);
+        }
         PsiMethod AuthorizationService= elementFactory.createMethodFromText(AuthorizationServiceBuilder.toString(),psiClass);
         PsiMethod recreateAuthorizationService= elementFactory.createMethodFromText(recreateAuthorizationServiceBuilder.toString(),psiClass);
         PsiMethod warmUpBrowser= elementFactory.createMethodFromText(warmUpBrowserBuilder.toString(),psiClass);
