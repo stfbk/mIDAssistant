@@ -1,6 +1,6 @@
 # mIDAssistant
 
-**mIDAssistant** is an Android Studio plugin that guides native mobile app developers with secure integeration of Single Sign-On Login ([OpenID Connect](http://openid.net/specs/openid-connect-core-1_0.html)) and Access Delegation ([OAuth 2.0](https://tools.ietf.org/html/rfc6749)) solutions within their apps. The companion page can be found [here](https://sites.google.com/fbk.eu/130720-paper). 
+**mIDAssistant** is an Android Studio plugin that guides native mobile app developers with secure integeration of Single Sign-On Login ([OpenID Connect](http://openid.net/specs/openid-connect-core-1_0.html)) and Access Delegation ([OAuth 2.0](https://tools.ietf.org/html/rfc6749)) solutions within their apps.
 
 ## Features
 
